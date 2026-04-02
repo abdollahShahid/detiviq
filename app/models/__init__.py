@@ -1,3 +1,4 @@
+from app.models.event import Event
 from app.models.facility import Facility
 from app.models.load import Load
 from app.models.mixins import TimestampMixin
@@ -13,5 +14,6 @@ __all__ = [
     "Load",
     "Stop",
     "Ruleset",
+    "Event",
     "TimestampMixin",
 ]

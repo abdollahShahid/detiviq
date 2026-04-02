@@ -69,7 +69,10 @@ def create_stop(load_id: int, payload: StopCreate, db: Session = Depends(get_db)
 def get_load_timeline(load_id: int, db: Session = Depends(get_db)):
     load = (
         db.query(Load)
-        .options(joinedload(Load.stops).joinedload(Stop.facility))
+        .options(
+            joinedload(Load.stops).joinedload(Stop.facility),
+            joinedload(Load.stops).joinedload(Stop.events),
+        )
         .filter(Load.id == load_id)
         .first()
     )
@@ -86,7 +89,16 @@ def get_load_timeline(load_id: int, db: Session = Depends(get_db)):
                 "facility_id": stop.facility_id,
                 "facility_name": stop.facility.name if stop.facility else None,
                 "status": stop.status,
-                "events": [],
+                "events": [
+                    {
+                        "event_id": event.id,
+                        "event_type": event.event_type,
+                        "occurred_at": event.occurred_at,
+                        "source": event.source,
+                        "idempotency_key": event.idempotency_key,
+                    }
+                    for event in stop.events
+                ],
             }
         )
 

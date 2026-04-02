@@ -27,6 +27,14 @@ class StopStatus(str, enum.Enum):
     completed = "completed"
 
 
+class EventType(str, enum.Enum):
+    arrived = "arrived"
+    checked_in = "checked_in"
+    loading_started = "loading_started"
+    loading_finished = "loading_finished"
+    departed = "departed"
+
+
 class RulesetScope(str, enum.Enum):
     facility = "facility"
     customer = "customer"
