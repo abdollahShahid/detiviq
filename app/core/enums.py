@@ -39,3 +39,7 @@ class RulesetScope(str, enum.Enum):
     facility = "facility"
     customer = "customer"
     organization_default = "organization_default"
+
+class DetentionCaseStatus(str, enum.Enum):
+    open = "open"
+    closed = "closed"

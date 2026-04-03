@@ -33,3 +33,5 @@ class Ruleset(TimestampMixin, Base):
 
     organization = relationship("Organization", back_populates="rulesets")
     facility = relationship("Facility", back_populates="rulesets")
+    detention_cases = relationship("DetentionCase", back_populates="ruleset")
+

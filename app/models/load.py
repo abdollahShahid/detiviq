@@ -32,7 +32,4 @@ class Load(TimestampMixin, Base):
     created_by_user = relationship("User", back_populates="created_loads")
     stops = relationship("Stop", back_populates="load", cascade="all, delete-orphan")
     events = relationship("Event", back_populates="load", order_by="Event.occurred_at")
-    events = relationship("Event", back_populates="load", order_by="Event.occurred_at")
-
-
-
+    detention_cases = relationship("DetentionCase", back_populates="load", cascade="all, delete-orphan")

@@ -15,3 +15,5 @@ class Organization(TimestampMixin, Base):
     facilities = relationship("Facility", back_populates="organization")
     loads = relationship("Load", back_populates="organization")
     rulesets = relationship("Ruleset", back_populates="organization")
+    detention_cases = relationship("DetentionCase", back_populates="organization")
+

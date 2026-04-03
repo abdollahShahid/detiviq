@@ -1,3 +1,4 @@
+from app.models.detention_case import DetentionCase
 from app.models.event import Event
 from app.models.facility import Facility
 from app.models.load import Load
@@ -15,5 +16,6 @@ __all__ = [
     "Stop",
     "Ruleset",
     "Event",
+    "DetentionCase",
     "TimestampMixin",
 ]

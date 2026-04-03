@@ -35,7 +35,9 @@ class Stop(TimestampMixin, Base):
     load = relationship("Load", back_populates="stops")
     facility = relationship("Facility", back_populates="stops")
     events = relationship("Event", back_populates="stop", order_by="Event.occurred_at")
-    events = relationship("Event", back_populates="stop", order_by="Event.occurred_at")
-
-
-
+    detention_case = relationship(
+        "DetentionCase",
+        back_populates="stop",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
