@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.db.deps import get_db
 from app.models.event import Event
 from app.schemas.event import EventCreate, EventRead
+from app.services.detention_cases import recompute_detention_case_for_stop
 
 router = APIRouter()
 
@@ -34,6 +35,10 @@ def create_event(payload: EventCreate, db: Session = Depends(get_db)):
         ingested_by_user_id=1,
     )
     db.add(event)
+    db.flush()
+
+    recompute_detention_case_for_stop(db, payload.stop_id)
+
     db.commit()
     db.refresh(event)
     return event
