@@ -1,14 +1,13 @@
 from datetime import datetime
-from decimal import Decimal
 
 from sqlalchemy.orm import Session, joinedload
 
+from app.core.enums import AuditAction, DetentionCaseStatus, EventType
 from app.models.detention_case import DetentionCase
-from app.models.load import Load
 from app.models.stop import Stop
-from app.core.enums import EventType, DetentionCaseStatus
-from app.services.rules_engine import resolve_ruleset_for_stop
+from app.services.audit_logs import create_audit_log
 from app.services.detention_math import compute_detention_metrics
+from app.services.rules_engine import resolve_ruleset_for_stop
 
 
 def _get_event_time(stop: Stop, event_type: EventType) -> datetime | None:
@@ -87,4 +86,34 @@ def recompute_detention_case_for_stop(db: Session, stop_id: int) -> DetentionCas
     detention_case.currency = ruleset.currency
 
     db.flush()
+
+    create_audit_log(
+        db,
+        organization_id=stop.organization_id,
+        load_id=stop.load_id,
+        stop_id=stop.id,
+        detention_case_id=detention_case.id,
+        action=(
+            AuditAction.detention_case_closed
+            if departed_at
+            else AuditAction.detention_case_computed
+        ),
+        message=(
+            "Detention case closed after departure event"
+            if departed_at
+            else "Detention case recomputed after event ingestion"
+        ),
+        payload_json={
+            "ruleset_id": ruleset.id,
+            "status": detention_case.status.value,
+            "dwell_minutes": detention_case.dwell_minutes,
+            "billable_minutes": detention_case.billable_minutes,
+            "billable_units": detention_case.billable_units,
+            "amount": str(detention_case.amount),
+            "currency": detention_case.currency,
+            "arrived_at": arrived_at.isoformat() if arrived_at else None,
+            "departed_at": departed_at.isoformat() if departed_at else None,
+        },
+    )
+
     return detention_case

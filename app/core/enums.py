@@ -43,3 +43,7 @@ class RulesetScope(str, enum.Enum):
 class DetentionCaseStatus(str, enum.Enum):
     open = "open"
     closed = "closed"
+
+class AuditAction(str, enum.Enum):
+    detention_case_computed = "detention_case_computed"
+    detention_case_closed = "detention_case_closed"
